@@ -4,20 +4,7 @@
     const processingUsers = new Set();
     const userStates = new Map();
 
-    const style = document.createElement('style');
-    style.textContent = `
-        .custom-cancel-request-icon svg g {
-            fill: #7b7c7d !important;
-        }
-        .dark-theme .custom-cancel-request-icon svg g,
-        [data-theme="dark"] .custom-cancel-request-icon svg g,
-        body.dark-theme .custom-cancel-request-icon svg g {
-            fill: #bdbebe !important;
-        }
-    `;
-    (document.head || document.documentElement).appendChild(style);
-
-    const ADD_FRIEND_TEXTS = {
+    const PROFILE_ADD_FRIEND_TEXTS = {
         en: "Add Friend",
         ar: "إضافة صديق",
         id: "Tambahkan Teman",
@@ -71,7 +58,17 @@
         km: "បន្ថែមមិត្តភក្តិ"
     };
 
-    const CANCEL_REQUEST_TEXTS = {
+    const SEARCH_ADD_FRIEND_TEXTS = {
+        ...PROFILE_ADD_FRIEND_TEXTS,
+        en: "Add friend",
+        es: "Añadir amistad",
+        fr: "Ajouter un ami",
+        it: "Aggiungi agli amici",
+        pt: "Adicionar amizade",
+        tr: "Arkadaş ekle"
+    };
+
+    const PROFILE_CANCEL_REQUEST_TEXTS = {
         en: "Cancel Request",
         ar: "إلغاء الطلب",
         id: "Batalkan Permintaan",
@@ -125,10 +122,70 @@
         km: "បោះបង់សំណើ"
     };
 
-    const ADD_TEXTS = {
+    const SEARCH_CANCEL_REQUEST_TEXTS = {
+        ...PROFILE_CANCEL_REQUEST_TEXTS,
+        en: "Cancel request",
+        tr: "İsteği iptal et"
+    };
+
+    const REQUEST_SENT_TEXTS = {
+        en: "Request sent",
+        ar: "تم إرسال الطلب",
+        id: "Permintaan terkirim",
+        de: "Anfrage gesendet",
+        es: "Solicitud enviada",
+        fr: "Demande envoyée",
+        it: "Richiesta inviata",
+        pl: "Wysłano prośbę",
+        pt: "Solicitação enviada",
+        vi: "Đã gửi yêu cầu",
+        tr: "İstek gönderildi",
+        hi: "अनुरोध भेजा गया",
+        th: "ส่งคำขอแล้ว",
+        zh: "已发送请求",
+        zh_cn: "已发送请求",
+        zh_tw: "已傳送請求",
+        zh_hans: "已发送请求",
+        zh_hant: "已傳送請求",
+        ja: "リクエストを送信しました",
+        ko: "요청 전송됨",
+        ms: "Permintaan dihantar",
+        nb: "Forespørsel sendt",
+        no: "Forespørsel sendt",
+        sr: "Захтев послат",
+        da: "Anmodning sendt",
+        et: "Taotlus saadetud",
+        fil: "Naipadala ang kahilingan",
+        tl: "Naipadala ang kahilingan",
+        hr: "Zahtjev poslan",
+        lv: "Pieprasījums nosūtīts",
+        lt: "Užklausa išsiųsta",
+        hu: "Kérelem elküldve",
+        nl: "Verzoek verzonden",
+        ro: "Cerere trimisă",
+        sq: "Kërkesa u dërgua",
+        sl: "Zahteva je poslana",
+        sk: "Žiadosť bola odoslaná",
+        fi: "Pyyntö lähetetty",
+        sv: "Förfrågan skickad",
+        uk: "Запит надіслано",
+        cs: "Žádost odeslána",
+        el: "Το αίτημα στάλθηκε",
+        bs: "Zahtjev poslan",
+        bg: "Заявката е изпратена",
+        ru: "Запрос отправлен",
+        kk: "Сұраныс жіберілді",
+        bn: "অনুরোধ পাঠানো হয়েছে",
+        si: "ඉල්ලීම යවන ලදී",
+        my: "တောင်းဆိုချက် ပို့ပြီးပါပြီ",
+        ka: "მოთხოვნა გაგზავნილია",
+        km: "បានផ្ញើសំណើ"
+    };
+
+    const ACTION_ADD_TEXTS = {
         en: "Add",
         ar: "إضافة",
-        id: "Tambah",
+        id: "Tambahkan",
         de: "Hinzufügen",
         es: "Añadir",
         fr: "Ajouter",
@@ -145,7 +202,7 @@
         zh_hans: "添加",
         zh_hant: "新增",
         ja: "追加",
-        ko: "추가",
+        ko: "추가하기",
         ms: "Tambah",
         nb: "Legg til",
         no: "Legg til",
@@ -179,7 +236,7 @@
         km: "បន្ថែម"
     };
 
-    const CANCEL_TEXTS = {
+    const ACTION_CANCEL_TEXTS = {
         en: "Cancel",
         ar: "إلغاء",
         id: "Batal",
@@ -199,7 +256,7 @@
         zh_hans: "取消",
         zh_hant: "取消",
         ja: "キャンセル",
-        ko: "취소",
+        ko: "취소하기",
         ms: "Batal",
         nb: "Avbryt",
         no: "Avbryt",
@@ -251,10 +308,6 @@
         const fullCode = getLangCode();
         const baseCode = fullCode.split("_")[0];
         return dict[fullCode] || dict[baseCode] || dict.en;
-    };
-
-    const getCancelIconSvg = () => {
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 28 28 28" style="display:block;width:28px;height:28px;pointer-events:none;"><g><path d="M14 42c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6m0-10c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4M14 54c-5.2 0-8.4-2.1-8.5-2.2-.3-.2-.5-.6-.4-1 .2-1.2 1.1-5.4 2.3-6.5 1.1-1.2 5-1.3 6.6-1.3.1 0 1.6 0 3.1.2.5.1.9.6.9 1.1s-.6.9-1.1.9C15.5 45 14 45 14 45c-2.4 0-4.8.3-5.3.7-.4.4-1.1 2.7-1.6 4.8C8.2 51 10.6 52 14 52c1 0 1.9-.1 2.8-.2.5-.1 1.1.3 1.2.8s-.3 1.1-.8 1.2c-1.1.1-2.1.2-3.2.2"/><g transform="translate(1.5, 0) rotate(45 21 49)"><path d="M25 50h-8c-.6 0-1-.4-1-1s.4-1 1-1h8c.6 0 1 .4 1 1s-.4 1-1 1"/><path d="M21 54c-.6 0-1-.4-1-1v-8c0-.6.4-1 1-1s1 .4 1 1v8c0 .6-.4 1-1 1"/></g></g></svg>`;
     };
 
     const getCsrfToken = async () => {
@@ -317,6 +370,13 @@
     const getUserIdFromElement = (element) => {
         if (!element) return null;
 
+        const playerCard = element.closest('.player-search-card, [data-testid*="player-card-"]');
+        if (playerCard) {
+            const testId = playerCard.getAttribute('data-testid');
+            const match = testId ? testId.match(/player-card-(\d+)/) : null;
+            if (match) return match[1];
+        }
+
         let curr = element;
         while (curr && curr !== document.body) {
             const key = Object.keys(curr).find(k => k.startsWith('__reactFiber$') || k.startsWith('__reactInternalInstance$') || k.startsWith('__reactProps$'));
@@ -326,7 +386,7 @@
                 while (fiber && depth < 30) {
                     const props = fiber.memoizedProps || fiber.pendingProps;
                     if (props) {
-                        const id = props.userId || props.targetUserId || props.userProfileId || props.profileUserId || props.friendId || props.user?.id || props.friend?.id || props.player?.id;
+                        const id = props.userId || props.targetUserId || props.userProfileId || props.profileUserId || props.friendId || props.user?.id || props.friend?.id || props.player?.id || props.id;
                         if (id && /^\d+$/.test(String(id))) return String(id);
                     }
                     fiber = fiber.return;
@@ -347,7 +407,7 @@
             if (id && /^\d+$/.test(id)) return id;
         }
 
-        const container = element.closest('.avatar-card-container, .player-avatar-card, .avatar-card-item, .list-item, .search-card, .user-card, .user-row, li, tr, div[ng-repeat]') || element.parentElement;
+        const container = element.closest('.player-search-card, .avatar-card-container, .player-avatar-card, .avatar-card-item, .list-item, .search-card, .user-card, .user-row, li, tr, div[ng-repeat]') || element.parentElement;
         if (container) {
             const link = container.querySelector('a[href*="/users/"], a[href*="profile?userId="]');
             if (link) {
@@ -360,7 +420,7 @@
     };
 
     const setProfileButtonToAdd = (btn) => {
-        const expectedText = getTranslation(ADD_FRIEND_TEXTS);
+        const expectedText = getTranslation(PROFILE_ADD_FRIEND_TEXTS);
         const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
         if (btn.dataset.customProfileState === 'add' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
             return;
@@ -391,7 +451,7 @@
     };
 
     const setProfileButtonToCancel = (btn) => {
-        const expectedText = getTranslation(CANCEL_REQUEST_TEXTS);
+        const expectedText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
         const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
         if (btn.dataset.customProfileState === 'cancel' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
             return;
@@ -415,107 +475,61 @@
     };
 
     const setSearchButtonToAdd = (btn) => {
-        const expectedText = getTranslation(ADD_FRIEND_TEXTS);
-        const span = btn.querySelector('span');
-        if (btn.dataset.customSearchState === 'add' && span && span.textContent === expectedText && !btn.hasAttribute('disabled')) {
+        const expectedText = getTranslation(SEARCH_ADD_FRIEND_TEXTS);
+        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
+        if (btn.dataset.customSearchState === 'add' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
             return;
         }
 
         btn.dataset.customSearchState = 'add';
-        btn.className = 'btn-control-md full-size ng-scope';
         btn.disabled = false;
         btn.removeAttribute('disabled');
+        btn.removeAttribute('aria-disabled');
+        btn.classList.remove('opacity-[0.5]');
         btn.style.setProperty('opacity', '1', 'important');
         btn.style.setProperty('cursor', 'pointer', 'important');
         btn.style.setProperty('pointer-events', 'auto', 'important');
-        if (span && span.textContent !== expectedText) {
-            span.textContent = expectedText;
+
+        if (btn.classList.contains('foundation-web-button') || btn.closest('.player-search-actions')) {
+            btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer relative flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-standard content-action-standard width-full player-search-action-parity';
+        } else if (!btn.className.includes('btn-control-md')) {
+            btn.className = 'btn-control-md full-size ng-scope';
+        }
+
+        if (textSpan && textSpan.textContent !== expectedText) {
+            textSpan.textContent = expectedText;
         }
     };
 
     const setSearchButtonToCancel = (btn) => {
-        const expectedText = getTranslation(CANCEL_REQUEST_TEXTS);
-        const span = btn.querySelector('span');
-        if (btn.dataset.customSearchState === 'cancel' && span && span.textContent === expectedText && !btn.hasAttribute('disabled')) {
+        const expectedText = getTranslation(SEARCH_CANCEL_REQUEST_TEXTS);
+        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
+        if (btn.dataset.customSearchState === 'cancel' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
             return;
         }
 
         btn.dataset.customSearchState = 'cancel';
-        btn.className = 'btn-control-md full-size ng-scope';
         btn.disabled = false;
         btn.removeAttribute('disabled');
+        btn.removeAttribute('aria-disabled');
+        btn.classList.remove('opacity-[0.5]');
         btn.style.setProperty('opacity', '1', 'important');
         btn.style.setProperty('cursor', 'pointer', 'important');
         btn.style.setProperty('pointer-events', 'auto', 'important');
-        if (span && span.textContent !== expectedText) {
-            span.textContent = expectedText;
-        }
-    };
 
-    const setMobileSearchToCancel = (el) => {
-        const expectedTitle = getTranslation(CANCEL_REQUEST_TEXTS);
-        const span = el.querySelector('span') || el;
-        const currentSvg = span.querySelector('svg');
-
-        if (el.dataset.customMobileState === 'cancel' && currentSvg && span.title === expectedTitle) {
-            return;
+        if (btn.classList.contains('foundation-web-button') || btn.closest('.player-search-actions')) {
+            btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer relative flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-standard content-action-standard width-full player-search-action-parity';
+        } else if (!btn.className.includes('btn-control-md')) {
+            btn.className = 'btn-control-md full-size ng-scope';
         }
 
-        el.dataset.customMobileState = 'cancel';
-        el.style.setProperty('cursor', 'pointer', 'important');
-        el.style.setProperty('pointer-events', 'auto', 'important');
-        el.style.setProperty('opacity', '1', 'important');
-
-        span.className = 'custom-cancel-request-icon';
-        span.innerHTML = getCancelIconSvg();
-        span.style.setProperty('display', 'flex', 'important');
-        span.style.setProperty('align-items', 'center', 'important');
-        span.style.setProperty('justify-content', 'center', 'important');
-        span.style.setProperty('position', 'absolute', 'important');
-        span.style.setProperty('top', '50%', 'important');
-        span.style.setProperty('left', '50%', 'important');
-        span.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
-        span.style.setProperty('width', '28px', 'important');
-        span.style.setProperty('height', '28px', 'important');
-        span.style.setProperty('margin', '0', 'important');
-        span.style.setProperty('padding', '0', 'important');
-        span.style.setProperty('cursor', 'pointer', 'important');
-        span.style.setProperty('pointer-events', 'auto', 'important');
-        span.title = expectedTitle;
-    };
-
-    const setMobileSearchToAdd = (el) => {
-        const expectedTitle = getTranslation(ADD_FRIEND_TEXTS);
-        const span = el.querySelector('span') || el;
-        if (el.dataset.customMobileState === 'add' && span.className === 'btn-add-friend icon-addfriend' && span.title === expectedTitle) {
-            return;
+        if (textSpan && textSpan.textContent !== expectedText) {
+            textSpan.textContent = expectedText;
         }
-
-        el.dataset.customMobileState = 'add';
-        el.style.setProperty('cursor', 'pointer', 'important');
-        el.style.setProperty('pointer-events', 'auto', 'important');
-        el.style.setProperty('opacity', '1', 'important');
-
-        span.innerHTML = '';
-        span.className = 'btn-add-friend icon-addfriend';
-        span.style.removeProperty('display');
-        span.style.removeProperty('align-items');
-        span.style.removeProperty('justify-content');
-        span.style.removeProperty('position');
-        span.style.removeProperty('top');
-        span.style.removeProperty('left');
-        span.style.removeProperty('transform');
-        span.style.removeProperty('width');
-        span.style.removeProperty('height');
-        span.style.removeProperty('margin');
-        span.style.removeProperty('padding');
-        span.style.setProperty('cursor', 'pointer', 'important');
-        span.style.setProperty('pointer-events', 'auto', 'important');
-        span.title = expectedTitle;
     };
 
     const setActionButtonToAdd = (btn) => {
-        const expectedText = getTranslation(ADD_TEXTS);
+        const expectedText = getTranslation(ACTION_ADD_TEXTS);
         const span = btn.querySelector('span.padding-y-xsmall') || btn.querySelector('span');
         if (btn.dataset.customActionState === 'add' && span && span.textContent === expectedText && !btn.hasAttribute('disabled')) {
             return;
@@ -536,7 +550,7 @@
     };
 
     const setActionButtonToCancel = (btn) => {
-        const expectedText = getTranslation(CANCEL_TEXTS);
+        const expectedText = getTranslation(ACTION_CANCEL_TEXTS);
         const span = btn.querySelector('span.padding-y-xsmall') || btn.querySelector('span');
         if (btn.dataset.customActionState === 'cancel' && span && span.textContent === expectedText && !btn.hasAttribute('disabled')) {
             return;
@@ -570,24 +584,13 @@
             });
         }
 
-        const searchBtns = document.querySelectorAll('.avatar-card-btns button, button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"]');
+        const searchBtns = document.querySelectorAll('.avatar-card-btns button, button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"], .player-search-actions button, button.player-search-action-parity');
         searchBtns.forEach(btn => {
             if (getUserIdFromElement(btn) === userId) {
                 if (state === 'pending') {
                     setSearchButtonToCancel(btn);
                 } else {
                     setSearchButtonToAdd(btn);
-                }
-            }
-        });
-
-        const mobileBtns = document.querySelectorAll('.mobile-card-btn, div[ng-if*="layout.friendship.PendingOnOtherUser"], div[ng-if*="layout.friendship.NoFriendship"]');
-        mobileBtns.forEach(item => {
-            if (getUserIdFromElement(item) === userId) {
-                if (state === 'pending') {
-                    setMobileSearchToCancel(item);
-                } else {
-                    setMobileSearchToAdd(item);
                 }
             }
         });
@@ -616,7 +619,7 @@
             } else if (knownState === 'none') {
                 setProfileButtonToAdd(btn);
             } else {
-                const expectedCancelText = getTranslation(CANCEL_REQUEST_TEXTS);
+                const expectedCancelText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
                 const isPending = btn.id.includes('PendingFriendRequest') || btn.textContent.trim() === 'Pending' || btn.textContent.trim() === expectedCancelText;
                 if (isPending) {
                     setProfileButtonToCancel(btn);
@@ -633,7 +636,7 @@
                     if (processingUsers.has(targetUserId)) return;
                     processingUsers.add(targetUserId);
 
-                    const expectedCancelText = getTranslation(CANCEL_REQUEST_TEXTS);
+                    const expectedCancelText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
                     const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
                         (!userStates.has(targetUserId) && (btn.dataset.customProfileState === 'cancel' || btn.id.includes('PendingFriendRequest') || btn.textContent.trim() === expectedCancelText));
 
@@ -658,7 +661,7 @@
     };
 
     const updateSearchButtons = () => {
-        const btns = document.querySelectorAll('.avatar-card-btns button, button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"]');
+        const btns = document.querySelectorAll('.avatar-card-btns button, button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"], .player-search-actions button, button.player-search-action-parity');
         btns.forEach(btn => {
             const targetUserId = getUserIdFromElement(btn);
             if (!targetUserId) return;
@@ -669,9 +672,14 @@
             } else if (knownState === 'none') {
                 setSearchButtonToAdd(btn);
             } else {
-                const span = btn.querySelector('span');
-                const text = span ? span.textContent.trim() : btn.textContent.trim();
-                const isRequestSent = (btn.getAttribute('ng-if') && btn.getAttribute('ng-if').includes('PendingOnOtherUser')) || btn.hasAttribute('disabled') || btn.disabled || Object.values(CANCEL_REQUEST_TEXTS).some(val => text.toLowerCase().includes(val.toLowerCase()));
+                const span = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
+                const text = (span ? span.textContent : btn.textContent).trim().toLowerCase();
+                const isRequestSent = (btn.getAttribute('ng-if') && btn.getAttribute('ng-if').includes('PendingOnOtherUser')) || 
+                                      btn.hasAttribute('disabled') || 
+                                      btn.disabled || 
+                                      Object.values(REQUEST_SENT_TEXTS).some(val => text.includes(val.toLowerCase())) ||
+                                      Object.values(SEARCH_CANCEL_REQUEST_TEXTS).some(val => text.includes(val.toLowerCase())) ||
+                                      Object.values(PROFILE_CANCEL_REQUEST_TEXTS).some(val => text.includes(val.toLowerCase()));
 
                 if (isRequestSent) {
                     setSearchButtonToCancel(btn);
@@ -688,64 +696,14 @@
                     if (processingUsers.has(targetUserId)) return;
                     processingUsers.add(targetUserId);
 
-                    const expectedCancelText = getTranslation(CANCEL_REQUEST_TEXTS);
+                    const expectedCancelText = getTranslation(SEARCH_CANCEL_REQUEST_TEXTS).toLowerCase();
                     const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
-                        (!userStates.has(targetUserId) && (btn.dataset.customSearchState === 'cancel' || btn.textContent.trim() === expectedCancelText || btn.getAttribute('ng-if')?.includes('PendingOnOtherUser')));
-
-                    if (currentIsPending) {
-                        setUserState(targetUserId, 'none');
-                        const success = await cancelFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'pending');
-                        }
-                    } else {
-                        setUserState(targetUserId, 'pending');
-                        const success = await sendFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'none');
-                        }
-                    }
-
-                    processingUsers.delete(targetUserId);
-                });
-            }
-        });
-    };
-
-    const updateMobileSearchButtons = () => {
-        const items = document.querySelectorAll('.mobile-card-btn, div[ng-if*="layout.friendship.PendingOnOtherUser"], div[ng-if*="layout.friendship.NoFriendship"]');
-        items.forEach(item => {
-            const targetUserId = getUserIdFromElement(item);
-            if (!targetUserId) return;
-
-            const knownState = userStates.get(targetUserId);
-            if (knownState === 'pending') {
-                setMobileSearchToCancel(item);
-            } else if (knownState === 'none') {
-                setMobileSearchToAdd(item);
-            } else {
-                const isPendingNg = item.getAttribute('ng-if')?.includes('PendingOnOtherUser');
-                const hasSandglass = item.querySelector('.icon-sandglass, .btn-pending-friend, .custom-cancel-request-icon') || item.classList.contains('icon-sandglass') || item.classList.contains('btn-pending-friend');
-
-                if (isPendingNg || hasSandglass) {
-                    setMobileSearchToCancel(item);
-                }
-            }
-
-            if (!item.dataset.customManaged) {
-                item.dataset.customManaged = 'true';
-
-                item.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    if (processingUsers.has(targetUserId)) return;
-                    processingUsers.add(targetUserId);
-
-                    const isPendingNg = item.getAttribute('ng-if')?.includes('PendingOnOtherUser');
-                    const hasSandglass = item.querySelector('.icon-sandglass, .btn-pending-friend, .custom-cancel-request-icon') || item.classList.contains('icon-sandglass') || item.classList.contains('btn-pending-friend');
-                    const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
-                        (!userStates.has(targetUserId) && (item.dataset.customMobileState === 'cancel' || isPendingNg || hasSandglass));
+                        (!userStates.has(targetUserId) && (
+                            btn.dataset.customSearchState === 'cancel' || 
+                            btn.textContent.trim().toLowerCase() === expectedCancelText || 
+                            btn.getAttribute('ng-if')?.includes('PendingOnOtherUser') ||
+                            Object.values(REQUEST_SENT_TEXTS).some(val => btn.textContent.trim().toLowerCase().includes(val.toLowerCase()))
+                        ));
 
                     if (currentIsPending) {
                         setUserState(targetUserId, 'none');
@@ -779,7 +737,7 @@
             } else if (knownState === 'none') {
                 setActionButtonToAdd(btn);
             } else {
-                const expectedCancelText = getTranslation(CANCEL_TEXTS);
+                const expectedCancelText = getTranslation(ACTION_CANCEL_TEXTS);
                 const isPending = btn.id === 'action-button-PendingFriendRequest';
 
                 if (isPending && btn.textContent.trim() !== expectedCancelText) {
@@ -797,7 +755,7 @@
                     if (processingUsers.has(targetUserId)) return;
                     processingUsers.add(targetUserId);
 
-                    const expectedCancelText = getTranslation(CANCEL_TEXTS);
+                    const expectedCancelText = getTranslation(ACTION_CANCEL_TEXTS);
                     const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
                         (!userStates.has(targetUserId) && (btn.dataset.customActionState === 'cancel' || btn.id === 'action-button-PendingFriendRequest' || btn.textContent.trim() === expectedCancelText));
 
@@ -827,7 +785,6 @@
         isUpdating = true;
         updateProfileButton();
         updateSearchButtons();
-        updateMobileSearchButtons();
         updateActionButtons();
         isUpdating = false;
     };
