@@ -578,7 +578,7 @@
             profileBtns.forEach(btn => {
                 if (state === 'pending') {
                     setProfileButtonToCancel(btn);
-                } else {
+                } else if (state === 'none') {
                     setProfileButtonToAdd(btn);
                 }
             });
@@ -611,9 +611,31 @@
         const targetUserId = getTargetUserId();
         if (!targetUserId) return;
 
+        const isFriend = document.querySelector('#user-profile-header-EditAlias, #user-profile-header-Chat, [data-testid="user-profile-header-friends"]');
+        if (isFriend) {
+            userStates.set(targetUserId, 'friends');
+            return;
+        }
+
         const btns = document.querySelectorAll('#user-profile-header-PendingFriendRequest, #user-profile-header-AddFriend, button[id*="PendingFriendRequest"], button[id*="AddFriend"]');
         btns.forEach(btn => {
-            const knownState = userStates.get(targetUserId);
+            let knownState = userStates.get(targetUserId);
+
+            if (knownState === 'friends') {
+                knownState = 'none';
+                userStates.set(targetUserId, 'none');
+            }
+
+            if (!btn.dataset.customProfileState && !processingUsers.has(targetUserId)) {
+                if (btn.id === 'user-profile-header-AddFriend') {
+                    knownState = 'none';
+                    userStates.set(targetUserId, 'none');
+                } else if (btn.id === 'user-profile-header-PendingFriendRequest') {
+                    knownState = 'pending';
+                    userStates.set(targetUserId, 'pending');
+                }
+            }
+
             if (knownState === 'pending') {
                 setProfileButtonToCancel(btn);
             } else if (knownState === 'none') {
@@ -623,6 +645,8 @@
                 const isPending = btn.id.includes('PendingFriendRequest') || btn.textContent.trim() === 'Pending' || btn.textContent.trim() === expectedCancelText;
                 if (isPending) {
                     setProfileButtonToCancel(btn);
+                } else {
+                    setProfileButtonToAdd(btn);
                 }
             }
 
@@ -778,6 +802,21 @@
             }
         });
     };
+
+    document.addEventListener('click', (e) => {
+        const item = e.target.closest('button, a, [role="button"], [role="menuitem"], li');
+        if (item) {
+            const text = (item.textContent || '').trim().toLowerCase();
+            const id = (item.id || '').toLowerCase();
+            const testId = (item.getAttribute('data-testid') || '').toLowerCase();
+            if (id.includes('unfriend') || testId.includes('unfriend') || text === 'unfriend' || text.includes('unfriend') || text === 'إلغاء الصداقة' || text.includes('إلغاء الصداقة')) {
+                const targetUserId = getTargetUserId();
+                if (targetUserId) {
+                    setUserState(targetUserId, 'none');
+                }
+            }
+        }
+    }, true);
 
     let isUpdating = false;
     const updateAll = () => {
