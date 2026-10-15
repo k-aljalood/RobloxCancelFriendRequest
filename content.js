@@ -77,16 +77,16 @@
         fr: "Annuler la demande",
         it: "Annulla richiesta",
         pl: "Anuluj prośbę",
-        pt: "Cancelar solicitação",
+        pt: "Cancelar pedido",
         vi: "Hủy yêu cầu",
         tr: "İsteği İptal Et",
-        hi: "अनुरोध रद्द करें",
+        hi: "रिक्वेस्ट कैंसिल करें",
         th: "ยกเลิกคำขอ",
-        zh: "取消请求",
-        zh_cn: "取消请求",
-        zh_tw: "取消請求",
-        zh_hans: "取消请求",
-        zh_hant: "取消請求",
+        zh: "取消邀请",
+        zh_cn: "取消邀请",
+        zh_tw: "取消邀請",
+        zh_hans: "取消邀请",
+        zh_hant: "取消邀請",
         ja: "リクエストをキャンセル",
         ko: "요청 취소",
         ms: "Batalkan Permintaan",
@@ -112,9 +112,9 @@
         cs: "Zrušit žádost",
         el: "Ακύρωση αιτήματος",
         bs: "Otkaži zahtjev",
-        bg: "Отказ на заявката",
+        bg: "Отмяна на заявката",
         ru: "Отменить запрос",
-        kk: "Сұранысты жою",
+        kk: "Сұраныстан бас тарту",
         bn: "অনুরোধ বাতিল করুন",
         si: "ඉල්ලීම අවලංගු කරන්න",
         my: "တောင်းဆိုမှုကို ပယ်ဖျက်ရန်",
@@ -131,24 +131,24 @@
     const REQUEST_SENT_TEXTS = {
         en: "Request sent",
         ar: "تم إرسال الطلب",
-        id: "Permintaan terkirim",
+        id: "Permintaan dikirim",
         de: "Anfrage gesendet",
         es: "Solicitud enviada",
         fr: "Demande envoyée",
         it: "Richiesta inviata",
         pl: "Wysłano prośbę",
-        pt: "Solicitação enviada",
+        pt: "Pedido enviado",
         vi: "Đã gửi yêu cầu",
         tr: "İstek gönderildi",
-        hi: "अनुरोध भेजा गया",
+        hi: "रिक्वेस्ट भेजी गई",
         th: "ส่งคำขอแล้ว",
-        zh: "已发送请求",
-        zh_cn: "已发送请求",
-        zh_tw: "已傳送請求",
-        zh_hans: "已发送请求",
-        zh_hant: "已傳送請求",
+        zh: "邀请已发送",
+        zh_cn: "邀请已发送",
+        zh_tw: "已傳送邀請",
+        zh_hans: "邀请已发送",
+        zh_hant: "已傳送邀請",
         ja: "リクエストを送信しました",
-        ko: "요청 전송됨",
+        ko: "요청 전송",
         ms: "Permintaan dihantar",
         nb: "Forespørsel sendt",
         no: "Forespørsel sendt",
@@ -164,8 +164,8 @@
         nl: "Verzoek verzonden",
         ro: "Cerere trimisă",
         sq: "Kërkesa u dërgua",
-        sl: "Zahteva je poslana",
-        sk: "Žiadosť bola odoslaná",
+        sl: "Zahteva poslana",
+        sk: "Žiadosť odoslaná",
         fi: "Pyyntö lähetetty",
         sv: "Förfrågan skickad",
         uk: "Запит надіслано",
@@ -239,16 +239,16 @@
     const ACTION_CANCEL_TEXTS = {
         en: "Cancel",
         ar: "إلغاء",
-        id: "Batal",
+        id: "Batalkan",
         de: "Abbrechen",
         es: "Cancelar",
         fr: "Annuler",
         it: "Annulla",
         pl: "Anuluj",
         pt: "Cancelar",
-        vi: "Hủy",
-        tr: "İptal",
-        hi: "रद्द करें",
+        vi: "Hủy Bỏ",
+        tr: "İptal Et",
+        hi: "कैंसिल करें",
         th: "ยกเลิก",
         zh: "取消",
         zh_cn: "取消",
@@ -256,7 +256,7 @@
         zh_hans: "取消",
         zh_hant: "取消",
         ja: "キャンセル",
-        ko: "취소하기",
+        ko: "취소",
         ms: "Batal",
         nb: "Avbryt",
         no: "Avbryt",
@@ -290,6 +290,31 @@
         km: "បោះបង់"
     };
 
+    const injectStyles = () => {
+        if (document.getElementById('cancel-friend-request-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'cancel-friend-request-styles';
+        style.innerHTML = `
+            @keyframes custom-progress-circle-rotate {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .foundation-web-progress-circle-indeterminate {
+                animation: custom-progress-circle-rotate 1.2s linear infinite !important;
+            }
+        `;
+        (document.head || document.documentElement).appendChild(style);
+    };
+
+    const getSpinnerHtml = () => `
+        <div class="foundation-web-progress-circle inline-flex items-center justify-center" role="progressbar" style="width: 16px; height: 16px; display: inline-flex; vertical-align: middle;">
+            <svg width="16" height="16" viewBox="0 0 32 32" style="display: block;">
+                <circle cx="16" cy="16" r="14.5" fill="none" stroke-width="3" style="stroke: var(--color-shift-200);"></circle>
+                <circle cx="16" cy="16" r="14.5" fill="none" stroke-width="3" stroke-dasharray="68.329640215578 22.776546738526" stroke-dashoffset="0" stroke-linecap="round" class="foundation-web-progress-circle-indeterminate" style="stroke: currentColor; transform-origin: 50% 50%;"></circle>
+            </svg>
+        </div>
+    `;
+
     const getLangCode = () => {
         let code = "";
         const htmlLang = document.documentElement.lang;
@@ -301,7 +326,7 @@
                 code = (meta.getAttribute("data-language-code") || "").toLowerCase().replace("-", "_");
             }
         }
-        return code;
+        return code || "en";
     };
 
     const getTranslation = (dict) => {
@@ -315,29 +340,51 @@
         if (meta && meta.getAttribute('data-token')) {
             return meta.getAttribute('data-token');
         }
-        const res = await fetch('https://auth.roblox.com/v2/login', {
-            method: 'POST',
-            credentials: 'include'
-        });
-        return res.headers.get('x-csrf-token') || '';
+        try {
+            const res = await fetch('https://auth.roblox.com/v2/login', {
+                method: 'POST',
+                credentials: 'include'
+            });
+            return res.headers.get('x-csrf-token') || '';
+        } catch (_) {
+            return '';
+        }
     };
 
-    const sendRequest = async (url, options = {}) => {
-        let res = await fetch(url, options);
-        if (res.status === 403) {
-            const token = res.headers.get('x-csrf-token');
-            if (token) {
-                options.headers = options.headers || {};
-                options.headers['X-CSRF-TOKEN'] = token;
-                res = await fetch(url, options);
-            }
+    const fetchWithRetry = async (url, options = {}, delay = 1500) => {
+        let currentDelay = delay;
+        while (true) {
+            try {
+                const res = await fetch(url, options);
+                if (res.ok) return res;
+
+                if (res.status === 403) {
+                    const token = res.headers.get('x-csrf-token');
+                    if (token) {
+                        options.headers = options.headers || {};
+                        options.headers['X-CSRF-TOKEN'] = token;
+                        continue;
+                    }
+                }
+
+                if (res.status === 429) {
+                    const retryAfter = res.headers.get('Retry-After');
+                    const waitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : currentDelay;
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                    currentDelay = Math.min(currentDelay * 1.5, 10000);
+                    continue;
+                }
+
+                if (res.status < 500 && res.status !== 403) return res;
+            } catch {}
+            await new Promise(resolve => setTimeout(resolve, currentDelay));
+            currentDelay = Math.min(currentDelay * 1.5, 10000);
         }
-        return res;
     };
 
     const cancelFriendRequest = async (targetUserId) => {
         const csrf = await getCsrfToken();
-        const res = await sendRequest(`https://friends.roblox.com/v1/users/${targetUserId}/unfriend`, {
+        const res = await fetchWithRetry(`https://friends.roblox.com/v1/users/${targetUserId}/unfriend`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -345,12 +392,12 @@
             },
             credentials: 'include'
         });
-        return res.ok;
+        return res ? res.ok : false;
     };
 
     const sendFriendRequest = async (targetUserId) => {
         const csrf = await getCsrfToken();
-        const res = await sendRequest(`https://friends.roblox.com/v1/users/${targetUserId}/request-friendship`, {
+        const res = await fetchWithRetry(`https://friends.roblox.com/v1/users/${targetUserId}/request-friendship`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -359,7 +406,7 @@
             body: JSON.stringify({ friendshipOriginSourceType: 0 }),
             credentials: 'include'
         });
-        return res.ok;
+        return res ? res.ok : false;
     };
 
     const getTargetUserId = () => {
@@ -419,22 +466,40 @@
         return getTargetUserId();
     };
 
-    const setProfileButtonToAdd = (btn) => {
+    const setProfileButtonToAdd = (btn, isProcessing = false) => {
         const expectedText = getTranslation(PROFILE_ADD_FRIEND_TEXTS);
-        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
-        if (btn.dataset.customProfileState === 'add' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
-            return;
-        }
+        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span') || btn;
 
         btn.dataset.customProfileState = 'add';
         btn.id = 'user-profile-header-AddFriend';
-        btn.disabled = false;
-        btn.removeAttribute('disabled');
-        btn.removeAttribute('aria-disabled');
-        btn.classList.remove('opacity-[0.5]');
-        btn.style.setProperty('opacity', '1', 'important');
-        btn.style.setProperty('cursor', 'pointer', 'important');
-        btn.style.setProperty('pointer-events', 'auto', 'important');
+        btn.disabled = isProcessing;
+
+        if (isProcessing) {
+            btn.setAttribute('disabled', '');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'not-allowed', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+            const currentWidth = btn.getBoundingClientRect().width;
+            if (currentWidth > 0 && !btn.style.minWidth) {
+                btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+            }
+            if (!textSpan.querySelector('.foundation-web-progress-circle')) {
+                textSpan.innerHTML = getSpinnerHtml();
+            }
+        } else {
+            btn.style.removeProperty('min-width');
+            btn.removeAttribute('disabled');
+            btn.removeAttribute('aria-disabled');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'pointer', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            if (textSpan.textContent !== expectedText) {
+                textSpan.textContent = expectedText;
+            }
+        }
 
         const hasJoin = document.getElementById('user-profile-header-JoinExperience') || btn.parentElement?.querySelector('#user-profile-header-JoinExperience');
         if (hasJoin) {
@@ -444,153 +509,254 @@
             btn.classList.remove('bg-action-standard', 'content-action-standard');
             btn.classList.add('bg-action-emphasis', 'content-action-emphasis');
         }
-
-        if (textSpan && textSpan.textContent !== expectedText) {
-            textSpan.textContent = expectedText;
-        }
     };
 
-    const setProfileButtonToCancel = (btn) => {
+    const setProfileButtonToCancel = (btn, isProcessing = false) => {
         const expectedText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
-        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
-        if (btn.dataset.customProfileState === 'cancel' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
-            return;
-        }
+        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span') || btn;
 
         btn.dataset.customProfileState = 'cancel';
         btn.id = 'user-profile-header-PendingFriendRequest';
-        btn.disabled = false;
-        btn.removeAttribute('disabled');
-        btn.removeAttribute('aria-disabled');
-        btn.classList.remove('opacity-[0.5]');
-        btn.style.setProperty('opacity', '1', 'important');
-        btn.style.setProperty('cursor', 'pointer', 'important');
-        btn.style.setProperty('pointer-events', 'auto', 'important');
+        btn.disabled = isProcessing;
+
+        if (isProcessing) {
+            btn.setAttribute('disabled', '');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'not-allowed', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+            const currentWidth = btn.getBoundingClientRect().width;
+            if (currentWidth > 0 && !btn.style.minWidth) {
+                btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+            }
+            if (!textSpan.querySelector('.foundation-web-progress-circle')) {
+                textSpan.innerHTML = getSpinnerHtml();
+            }
+        } else {
+            btn.style.removeProperty('min-width');
+            btn.removeAttribute('disabled');
+            btn.removeAttribute('aria-disabled');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'pointer', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            if (textSpan.textContent !== expectedText) {
+                textSpan.textContent = expectedText;
+            }
+        }
+
         btn.classList.remove('bg-action-emphasis', 'content-action-emphasis');
         btn.classList.add('bg-action-standard', 'content-action-standard');
-
-        if (textSpan && textSpan.textContent !== expectedText) {
-            textSpan.textContent = expectedText;
-        }
     };
 
-    const setSearchButtonToAdd = (btn) => {
+    const setSearchButtonToAdd = (btn, isProcessing = false) => {
         const expectedText = getTranslation(SEARCH_ADD_FRIEND_TEXTS);
-        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
-        if (btn.dataset.customSearchState === 'add' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
-            return;
-        }
+        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span') || btn;
 
         btn.dataset.customSearchState = 'add';
-        btn.disabled = false;
-        btn.removeAttribute('disabled');
-        btn.removeAttribute('aria-disabled');
-        btn.classList.remove('opacity-[0.5]');
-        btn.style.setProperty('opacity', '1', 'important');
-        btn.style.setProperty('cursor', 'pointer', 'important');
-        btn.style.setProperty('pointer-events', 'auto', 'important');
+        btn.disabled = isProcessing;
+
+        if (isProcessing) {
+            btn.setAttribute('disabled', '');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'not-allowed', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+            const currentWidth = btn.getBoundingClientRect().width;
+            if (currentWidth > 0 && !btn.style.minWidth) {
+                btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+            }
+            if (!textSpan.querySelector('.foundation-web-progress-circle')) {
+                textSpan.innerHTML = getSpinnerHtml();
+            }
+        } else {
+            btn.style.removeProperty('min-width');
+            btn.removeAttribute('disabled');
+            btn.removeAttribute('aria-disabled');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'pointer', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            if (textSpan.textContent !== expectedText) {
+                textSpan.textContent = expectedText;
+            }
+        }
 
         if (btn.classList.contains('foundation-web-button') || btn.closest('.player-search-actions')) {
             btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer relative flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-standard content-action-standard width-full player-search-action-parity';
         } else if (!btn.className.includes('btn-control-md')) {
             btn.className = 'btn-control-md full-size ng-scope';
         }
-
-        if (textSpan && textSpan.textContent !== expectedText) {
-            textSpan.textContent = expectedText;
-        }
     };
 
-    const setSearchButtonToCancel = (btn) => {
+    const setSearchButtonToCancel = (btn, isProcessing = false) => {
         const expectedText = getTranslation(SEARCH_CANCEL_REQUEST_TEXTS);
-        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
-        if (btn.dataset.customSearchState === 'cancel' && textSpan && textSpan.textContent === expectedText && !btn.hasAttribute('disabled')) {
-            return;
-        }
+        const textSpan = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span') || btn;
 
         btn.dataset.customSearchState = 'cancel';
-        btn.disabled = false;
-        btn.removeAttribute('disabled');
-        btn.removeAttribute('aria-disabled');
-        btn.classList.remove('opacity-[0.5]');
-        btn.style.setProperty('opacity', '1', 'important');
-        btn.style.setProperty('cursor', 'pointer', 'important');
-        btn.style.setProperty('pointer-events', 'auto', 'important');
+        btn.disabled = isProcessing;
+
+        if (isProcessing) {
+            btn.setAttribute('disabled', '');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'not-allowed', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+            const currentWidth = btn.getBoundingClientRect().width;
+            if (currentWidth > 0 && !btn.style.minWidth) {
+                btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+            }
+            if (!textSpan.querySelector('.foundation-web-progress-circle')) {
+                textSpan.innerHTML = getSpinnerHtml();
+            }
+        } else {
+            btn.style.removeProperty('min-width');
+            btn.removeAttribute('disabled');
+            btn.removeAttribute('aria-disabled');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'pointer', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            if (textSpan.textContent !== expectedText) {
+                textSpan.textContent = expectedText;
+            }
+        }
 
         if (btn.classList.contains('foundation-web-button') || btn.closest('.player-search-actions')) {
             btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer relative flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-standard content-action-standard width-full player-search-action-parity';
         } else if (!btn.className.includes('btn-control-md')) {
             btn.className = 'btn-control-md full-size ng-scope';
         }
-
-        if (textSpan && textSpan.textContent !== expectedText) {
-            textSpan.textContent = expectedText;
-        }
     };
 
-    const setActionButtonToAdd = (btn) => {
+    const setActionButtonToAdd = (btn, isProcessing = false) => {
         const expectedText = getTranslation(ACTION_ADD_TEXTS);
-        const span = btn.querySelector('span.padding-y-xsmall') || btn.querySelector('span');
-        if (btn.dataset.customActionState === 'add' && span && span.textContent === expectedText && !btn.hasAttribute('disabled')) {
-            return;
-        }
+        const span = btn.querySelector('span.padding-y-xsmall') || btn.querySelector('span') || btn;
 
         btn.dataset.customActionState = 'add';
         btn.id = 'action-button-AddFriend';
-        btn.setAttribute('aria-disabled', 'false');
-        btn.removeAttribute('disabled');
-        btn.disabled = false;
-        btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-emphasis content-action-emphasis shrink-0 margin-right-medium';
-        btn.style.setProperty('opacity', '1', 'important');
-        btn.style.setProperty('cursor', 'pointer', 'important');
-        btn.style.setProperty('pointer-events', 'auto', 'important');
-        if (span && span.textContent !== expectedText) {
-            span.textContent = expectedText;
+        btn.disabled = isProcessing;
+
+        if (isProcessing) {
+            btn.setAttribute('disabled', '');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'not-allowed', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+            const currentWidth = btn.getBoundingClientRect().width;
+            if (currentWidth > 0 && !btn.style.minWidth) {
+                btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+            }
+            if (!span.querySelector('.foundation-web-progress-circle')) {
+                span.innerHTML = getSpinnerHtml();
+            }
+        } else {
+            btn.style.removeProperty('min-width');
+            btn.setAttribute('aria-disabled', 'false');
+            btn.removeAttribute('disabled');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'pointer', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            if (span.textContent !== expectedText) {
+                span.textContent = expectedText;
+            }
         }
+
+        btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-emphasis content-action-emphasis shrink-0 margin-right-medium';
     };
 
-    const setActionButtonToCancel = (btn) => {
+    const setActionButtonToCancel = (btn, isProcessing = false) => {
         const expectedText = getTranslation(ACTION_CANCEL_TEXTS);
-        const span = btn.querySelector('span.padding-y-xsmall') || btn.querySelector('span');
-        if (btn.dataset.customActionState === 'cancel' && span && span.textContent === expectedText && !btn.hasAttribute('disabled')) {
-            return;
-        }
+        const span = btn.querySelector('span.padding-y-xsmall') || btn.querySelector('span') || btn;
 
         btn.dataset.customActionState = 'cancel';
         btn.id = 'action-button-PendingFriendRequest';
-        btn.setAttribute('aria-disabled', 'false');
-        btn.removeAttribute('disabled');
-        btn.disabled = false;
-        btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-standard content-action-standard shrink-0 margin-right-medium';
-        btn.style.setProperty('opacity', '1', 'important');
-        btn.style.setProperty('cursor', 'pointer', 'important');
-        btn.style.setProperty('pointer-events', 'auto', 'important');
-        if (span && span.textContent !== expectedText) {
-            span.textContent = expectedText;
+        btn.disabled = isProcessing;
+
+        if (isProcessing) {
+            btn.setAttribute('disabled', '');
+            btn.setAttribute('aria-disabled', 'true');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'not-allowed', 'important');
+            btn.style.setProperty('pointer-events', 'none', 'important');
+            const currentWidth = btn.getBoundingClientRect().width;
+            if (currentWidth > 0 && !btn.style.minWidth) {
+                btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+            }
+            if (!span.querySelector('.foundation-web-progress-circle')) {
+                span.innerHTML = getSpinnerHtml();
+            }
+        } else {
+            btn.style.removeProperty('min-width');
+            btn.setAttribute('aria-disabled', 'false');
+            btn.removeAttribute('disabled');
+            btn.classList.remove('opacity-[0.5]');
+            btn.style.setProperty('opacity', '1', 'important');
+            btn.style.setProperty('cursor', 'pointer', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            if (span.textContent !== expectedText) {
+                span.textContent = expectedText;
+            }
         }
+
+        btn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-medium height-1000 padding-x-medium bg-action-standard content-action-standard shrink-0 margin-right-medium';
     };
 
     const setUserState = (userId, state) => {
         userStates.set(userId, state);
+        const isProcessing = processingUsers.has(userId);
 
         if (getTargetUserId() === userId) {
             const profileBtns = document.querySelectorAll('#user-profile-header-PendingFriendRequest, #user-profile-header-AddFriend, button[id*="PendingFriendRequest"], button[id*="AddFriend"]');
             profileBtns.forEach(btn => {
                 if (state === 'pending') {
-                    setProfileButtonToCancel(btn);
+                    setProfileButtonToCancel(btn, isProcessing);
                 } else if (state === 'none') {
-                    setProfileButtonToAdd(btn);
+                    setProfileButtonToAdd(btn, isProcessing);
+                }
+            });
+
+            const menuItems = document.querySelectorAll('div[role="menu"] button[role="menuitem"], .foundation-web-menu button[role="menuitem"]');
+            menuItems.forEach(btn => {
+                if (btn.dataset.customMenuState) {
+                    const titleSpan = btn.querySelector('.foundation-web-menu-item-title') || btn.querySelector('span') || btn;
+                    btn.disabled = isProcessing;
+
+                    if (isProcessing) {
+                        btn.style.setProperty('cursor', 'not-allowed', 'important');
+                        btn.style.setProperty('pointer-events', 'none', 'important');
+                        if (!titleSpan.querySelector('.foundation-web-progress-circle')) {
+                            titleSpan.innerHTML = getSpinnerHtml();
+                        }
+                    } else {
+                        btn.style.setProperty('cursor', 'pointer', 'important');
+                        btn.style.setProperty('pointer-events', 'auto', 'important');
+                        if (state === 'pending') {
+                            btn.dataset.customMenuState = 'cancel';
+                            titleSpan.textContent = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
+                        } else if (state === 'none') {
+                            btn.dataset.customMenuState = 'add';
+                            titleSpan.textContent = getTranslation(PROFILE_ADD_FRIEND_TEXTS);
+                        }
+                    }
                 }
             });
         }
 
-        const searchBtns = document.querySelectorAll('.avatar-card-btns button, button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"], .player-search-actions button, button.player-search-action-parity');
+        const searchBtns = document.querySelectorAll('.player-search-actions button, button.player-search-action-parity, .avatar-card-btns button:not(.accept-friend):not(.ignore-friend), button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"]');
         searchBtns.forEach(btn => {
+            if (btn.classList.contains('accept-friend') || btn.classList.contains('ignore-friend') || btn.closest('.friends-content')) return;
             if (getUserIdFromElement(btn) === userId) {
                 if (state === 'pending') {
-                    setSearchButtonToCancel(btn);
+                    setSearchButtonToCancel(btn, isProcessing);
                 } else {
-                    setSearchButtonToAdd(btn);
+                    setSearchButtonToAdd(btn, isProcessing);
                 }
             }
         });
@@ -599,9 +765,9 @@
         actionBtns.forEach(btn => {
             if (getUserIdFromElement(btn) === userId) {
                 if (state === 'pending') {
-                    setActionButtonToCancel(btn);
+                    setActionButtonToCancel(btn, isProcessing);
                 } else {
-                    setActionButtonToAdd(btn);
+                    setActionButtonToAdd(btn, isProcessing);
                 }
             }
         });
@@ -636,17 +802,19 @@
                 }
             }
 
+            const isProcessing = processingUsers.has(targetUserId);
+
             if (knownState === 'pending') {
-                setProfileButtonToCancel(btn);
+                setProfileButtonToCancel(btn, isProcessing);
             } else if (knownState === 'none') {
-                setProfileButtonToAdd(btn);
+                setProfileButtonToAdd(btn, isProcessing);
             } else {
                 const expectedCancelText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
                 const isPending = btn.id.includes('PendingFriendRequest') || btn.textContent.trim() === 'Pending' || btn.textContent.trim() === expectedCancelText;
                 if (isPending) {
-                    setProfileButtonToCancel(btn);
+                    setProfileButtonToCancel(btn, isProcessing);
                 } else {
-                    setProfileButtonToAdd(btn);
+                    setProfileButtonToAdd(btn, isProcessing);
                 }
             }
 
@@ -659,54 +827,103 @@
 
                     if (processingUsers.has(targetUserId)) return;
                     processingUsers.add(targetUserId);
+
+                    const currentWidth = btn.getBoundingClientRect().width;
+                    if (currentWidth > 0) {
+                        btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+                    }
 
                     const expectedCancelText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
                     const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
                         (!userStates.has(targetUserId) && (btn.dataset.customProfileState === 'cancel' || btn.id.includes('PendingFriendRequest') || btn.textContent.trim() === expectedCancelText));
 
                     if (currentIsPending) {
-                        setUserState(targetUserId, 'none');
-                        const success = await cancelFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'pending');
-                        }
-                    } else {
                         setUserState(targetUserId, 'pending');
+                        const success = await cancelFriendRequest(targetUserId);
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'none' : 'pending');
+                    } else {
+                        setUserState(targetUserId, 'none');
                         const success = await sendFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'none');
-                        }
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'pending' : 'none');
                     }
-
-                    processingUsers.delete(targetUserId);
                 });
             }
         });
     };
 
-    const updateSearchButtons = () => {
-        const btns = document.querySelectorAll('.avatar-card-btns button, button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"], .player-search-actions button, button.player-search-action-parity');
-        btns.forEach(btn => {
-            const targetUserId = getUserIdFromElement(btn);
-            if (!targetUserId) return;
+    const updateContextualMenuButtons = () => {
+        const targetUserId = getTargetUserId();
+        if (!targetUserId) return;
 
-            const knownState = userStates.get(targetUserId);
+        const isFriend = document.querySelector('#user-profile-header-EditAlias, #user-profile-header-Chat, [data-testid="user-profile-header-friends"]');
+        if (isFriend) {
+            userStates.set(targetUserId, 'friends');
+            return;
+        }
+
+        const menuItems = document.querySelectorAll('div[role="menu"] button[role="menuitem"], .foundation-web-menu button[role="menuitem"]');
+        menuItems.forEach(btn => {
+            const titleSpan = btn.querySelector('.foundation-web-menu-item-title') || btn.querySelector('span') || btn;
+            const text = titleSpan.textContent.trim().toLowerCase();
+
+            const isFriendMenuItem = btn.dataset.customMenuState ||
+                text === 'pending' ||
+                Object.values(REQUEST_SENT_TEXTS).some(t => text.includes(t.toLowerCase())) ||
+                Object.values(PROFILE_CANCEL_REQUEST_TEXTS).some(t => text.includes(t.toLowerCase())) ||
+                Object.values(PROFILE_ADD_FRIEND_TEXTS).some(t => text.includes(t.toLowerCase()));
+
+            if (!isFriendMenuItem) return;
+
+            let knownState = userStates.get(targetUserId);
+            if (!knownState) {
+                if (text === 'pending' || Object.values(REQUEST_SENT_TEXTS).some(t => text.includes(t.toLowerCase())) || Object.values(PROFILE_CANCEL_REQUEST_TEXTS).some(t => text.includes(t.toLowerCase()))) {
+                    knownState = 'pending';
+                    userStates.set(targetUserId, 'pending');
+                } else {
+                    knownState = 'none';
+                    userStates.set(targetUserId, 'none');
+                }
+            }
+
+            const isProcessing = processingUsers.has(targetUserId);
+
             if (knownState === 'pending') {
-                setSearchButtonToCancel(btn);
-            } else if (knownState === 'none') {
-                setSearchButtonToAdd(btn);
-            } else {
-                const span = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span');
-                const text = (span ? span.textContent : btn.textContent).trim().toLowerCase();
-                const isRequestSent = (btn.getAttribute('ng-if') && btn.getAttribute('ng-if').includes('PendingOnOtherUser')) || 
-                                      btn.hasAttribute('disabled') || 
-                                      btn.disabled || 
-                                      Object.values(REQUEST_SENT_TEXTS).some(val => text.includes(val.toLowerCase())) ||
-                                      Object.values(SEARCH_CANCEL_REQUEST_TEXTS).some(val => text.includes(val.toLowerCase())) ||
-                                      Object.values(PROFILE_CANCEL_REQUEST_TEXTS).some(val => text.includes(val.toLowerCase()));
+                const cancelText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS);
+                btn.dataset.customMenuState = 'cancel';
+                btn.disabled = isProcessing;
 
-                if (isRequestSent) {
-                    setSearchButtonToCancel(btn);
+                if (isProcessing) {
+                    btn.style.setProperty('cursor', 'not-allowed', 'important');
+                    btn.style.setProperty('pointer-events', 'none', 'important');
+                    if (!titleSpan.querySelector('.foundation-web-progress-circle')) {
+                        titleSpan.innerHTML = getSpinnerHtml();
+                    }
+                } else {
+                    btn.style.setProperty('cursor', 'pointer', 'important');
+                    btn.style.setProperty('pointer-events', 'auto', 'important');
+                    if (titleSpan.textContent !== cancelText) {
+                        titleSpan.textContent = cancelText;
+                    }
+                }
+            } else if (knownState === 'none') {
+                const addText = getTranslation(PROFILE_ADD_FRIEND_TEXTS);
+                btn.dataset.customMenuState = 'add';
+                btn.disabled = isProcessing;
+
+                if (isProcessing) {
+                    btn.style.setProperty('cursor', 'not-allowed', 'important');
+                    btn.style.setProperty('pointer-events', 'none', 'important');
+                    if (!titleSpan.querySelector('.foundation-web-progress-circle')) {
+                        titleSpan.innerHTML = getSpinnerHtml();
+                    }
+                } else {
+                    btn.style.setProperty('cursor', 'pointer', 'important');
+                    btn.style.setProperty('pointer-events', 'auto', 'important');
+                    if (titleSpan.textContent !== addText) {
+                        titleSpan.textContent = addText;
+                    }
                 }
             }
 
@@ -719,6 +936,69 @@
 
                     if (processingUsers.has(targetUserId)) return;
                     processingUsers.add(targetUserId);
+
+                    const expectedCancelText = getTranslation(PROFILE_CANCEL_REQUEST_TEXTS).toLowerCase();
+                    const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
+                        (!userStates.has(targetUserId) && (btn.dataset.customMenuState === 'cancel' || text === 'pending' || text === expectedCancelText));
+
+                    if (currentIsPending) {
+                        setUserState(targetUserId, 'pending');
+                        const success = await cancelFriendRequest(targetUserId);
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'none' : 'pending');
+                    } else {
+                        setUserState(targetUserId, 'none');
+                        const success = await sendFriendRequest(targetUserId);
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'pending' : 'none');
+                    }
+                });
+            }
+        });
+    };
+
+    const updateSearchButtons = () => {
+        const btns = document.querySelectorAll('.player-search-actions button, button.player-search-action-parity, .avatar-card-btns button:not(.accept-friend):not(.ignore-friend), button[ng-if*="PendingOnOtherUser"], button[ng-if*="NoFriendship"]');
+        btns.forEach(btn => {
+            if (btn.classList.contains('accept-friend') || btn.classList.contains('ignore-friend') || btn.closest('.friends-content')) return;
+
+            const targetUserId = getUserIdFromElement(btn);
+            if (!targetUserId) return;
+
+            const isProcessing = processingUsers.has(targetUserId);
+            const knownState = userStates.get(targetUserId);
+
+            if (knownState === 'pending') {
+                setSearchButtonToCancel(btn, isProcessing);
+            } else if (knownState === 'none') {
+                setSearchButtonToAdd(btn, isProcessing);
+            } else {
+                const span = btn.querySelector('.text-truncate-end') || btn.querySelector('span span') || btn.querySelector('span') || btn;
+                const text = span.textContent.trim().toLowerCase();
+                const isRequestSent = (btn.getAttribute('ng-if') && btn.getAttribute('ng-if').includes('PendingOnOtherUser')) || 
+                                      Object.values(REQUEST_SENT_TEXTS).some(val => text.includes(val.toLowerCase())) ||
+                                      Object.values(SEARCH_CANCEL_REQUEST_TEXTS).some(val => text.includes(val.toLowerCase())) ||
+                                      Object.values(PROFILE_CANCEL_REQUEST_TEXTS).some(val => text.includes(val.toLowerCase()));
+
+                if (isRequestSent) {
+                    setSearchButtonToCancel(btn, isProcessing);
+                }
+            }
+
+            if (!btn.dataset.customManaged) {
+                btn.dataset.customManaged = 'true';
+
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (processingUsers.has(targetUserId)) return;
+                    processingUsers.add(targetUserId);
+
+                    const currentWidth = btn.getBoundingClientRect().width;
+                    if (currentWidth > 0) {
+                        btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+                    }
 
                     const expectedCancelText = getTranslation(SEARCH_CANCEL_REQUEST_TEXTS).toLowerCase();
                     const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
@@ -730,20 +1010,16 @@
                         ));
 
                     if (currentIsPending) {
-                        setUserState(targetUserId, 'none');
-                        const success = await cancelFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'pending');
-                        }
-                    } else {
                         setUserState(targetUserId, 'pending');
+                        const success = await cancelFriendRequest(targetUserId);
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'none' : 'pending');
+                    } else {
+                        setUserState(targetUserId, 'none');
                         const success = await sendFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'none');
-                        }
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'pending' : 'none');
                     }
-
-                    processingUsers.delete(targetUserId);
                 });
             }
         });
@@ -755,17 +1031,19 @@
             const targetUserId = getUserIdFromElement(btn);
             if (!targetUserId) return;
 
+            const isProcessing = processingUsers.has(targetUserId);
             const knownState = userStates.get(targetUserId);
+
             if (knownState === 'pending') {
-                setActionButtonToCancel(btn);
+                setActionButtonToCancel(btn, isProcessing);
             } else if (knownState === 'none') {
-                setActionButtonToAdd(btn);
+                setActionButtonToAdd(btn, isProcessing);
             } else {
                 const expectedCancelText = getTranslation(ACTION_CANCEL_TEXTS);
                 const isPending = btn.id === 'action-button-PendingFriendRequest';
 
                 if (isPending && btn.textContent.trim() !== expectedCancelText) {
-                    setActionButtonToCancel(btn);
+                    setActionButtonToCancel(btn, isProcessing);
                 }
             }
 
@@ -779,25 +1057,26 @@
                     if (processingUsers.has(targetUserId)) return;
                     processingUsers.add(targetUserId);
 
+                    const currentWidth = btn.getBoundingClientRect().width;
+                    if (currentWidth > 0) {
+                        btn.style.setProperty('min-width', `${currentWidth}px`, 'important');
+                    }
+
                     const expectedCancelText = getTranslation(ACTION_CANCEL_TEXTS);
                     const currentIsPending = (userStates.get(targetUserId) === 'pending') ||
                         (!userStates.has(targetUserId) && (btn.dataset.customActionState === 'cancel' || btn.id === 'action-button-PendingFriendRequest' || btn.textContent.trim() === expectedCancelText));
 
                     if (currentIsPending) {
-                        setUserState(targetUserId, 'none');
-                        const success = await cancelFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'pending');
-                        }
-                    } else {
                         setUserState(targetUserId, 'pending');
+                        const success = await cancelFriendRequest(targetUserId);
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'none' : 'pending');
+                    } else {
+                        setUserState(targetUserId, 'none');
                         const success = await sendFriendRequest(targetUserId);
-                        if (!success) {
-                            setUserState(targetUserId, 'none');
-                        }
+                        processingUsers.delete(targetUserId);
+                        setUserState(targetUserId, success ? 'pending' : 'none');
                     }
-
-                    processingUsers.delete(targetUserId);
                 });
             }
         });
@@ -823,6 +1102,7 @@
         if (isUpdating) return;
         isUpdating = true;
         updateProfileButton();
+        updateContextualMenuButtons();
         updateSearchButtons();
         updateActionButtons();
         isUpdating = false;
@@ -836,6 +1116,8 @@
             updateAll();
         });
     };
+
+    injectStyles();
 
     const observer = new MutationObserver(scheduleUpdate);
     observer.observe(document.body, { 
